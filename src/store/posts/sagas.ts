@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { SagaIterator } from 'redux-saga';
-import { all, takeLatest, call } from 'redux-saga/effects';
+import { all, takeLatest, call, put } from 'redux-saga/effects';
 
 import { GET_POST_LIST } from './actionTypes';
+import { getPostListSuccess } from './actions';
 
 const getPosts = () =>
   axios.get<any[]>('https://jsonplaceholder.typicode.com/posts');
@@ -13,7 +14,11 @@ const getPosts = () =>
 function* fetchPostsSaga(): SagaIterator {
   try {
     const response = yield call(getPosts);
-    console.log(response);
+    yield put(
+      getPostListSuccess({
+        posts: response.data,
+      })
+    );
   } catch (e: any) {
     console.log(e);
   }
